@@ -1,24 +1,19 @@
 <template>
 	<div>
-			<button v-bind:class="{clicked: option.isPressed, disabled: option.disabled}" v-bind:key='idx' v-for='(option, idx) in selections' @click='
-			selections[0].isPressed = false;
-			selections[1].isPressed = false
-			selections[2].isPressed = false
-			selections[3].isPressed = false
-			option.isPressed = !option.isPressed
-			
-			'>{{option.title}}</button>
+			<button v-bind:class="{clicked: option.isPressed, disabled: option.disabled}" v-bind:key='idx' v-for='(option, idx) in selections' @click='clicked(option)'>
+				{{option.title}}</button>
 	</div>
 </template>
 
 <script>
+import {eventBus} from '../main'
 export default {
 	name: 'menuLower',
 	data() {
 		return {
 			
 			selections: [
-				{id: 1, title: 'Быстрая продажа', isPressed: true, disabled: false},
+				{id: 1, title: 'Быстрая продажа', isPressed: false, disabled: false},
 				{id: 2, title: 'Отчёт', isPressed: false, disabled: false},
 				{id: 3, title: 'Возврат', isPressed: false, disabled: true},
 				{id: 4, title: 'Ремонт', isPressed: false, disabled: true},
@@ -26,10 +21,22 @@ export default {
 		}
 	},
 	methods: {
-		clicked() {
+		clicked(event) {
+			this.selections[0].isPressed = false;
+			this.selections[1].isPressed = false
+			this.selections[2].isPressed = false
+			this.selections[3].isPressed = false
+			event.isPressed = !event.isPressed
+			eventBus.$emit('clicksss', {
+			firstButton: this.selections[0].isPressed,
+			secondButton: this.selections[1].isPressed,
+			thirdButton: this.selections[2].isPressed,
+			fourthButton: this.selections[3].isPressed,
+			})
 			
+
 		}
-	}
+	},
 }
 </script>
 

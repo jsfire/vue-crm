@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<p :key='idx' v-for='(good, idx) in goods[0]'>name: {{good.name}} price: {{good.price}}</p>
+		<!-- <p :key='idx' v-for='(good, idx) in goods[0]'>name: {{good.name}} price: {{good.price}}</p> -->
 		<div class="upperBar">
 			<clocksss></clocksss>
 			<img class='upperBar_logo' :src='image' alt="user-logo">
