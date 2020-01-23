@@ -1,23 +1,25 @@
 <template>
     <div class='menu'>
         <fastMarket v-if='firstButton'/>
+        <report v-if='secondButton'/>
     </div>
 </template>
 
 <script>
 import { eventBus } from "../main";
 import fastMarket from '@/components/fastMarket'
+import report from '@/components/report'
 export default {
     name: 'menuSelection',
     components: {
-        fastMarket,
+        fastMarket, report
     },
     data() {
         return {
-            firstButton: Boolean,
-            secondButton: Boolean,
-            thirdButton: Boolean,
-            fourthButton: Boolean,
+            firstButton: true,
+            secondButton: false,
+            thirdButton: false,
+            fourthButton: false,
 
         }
     },
@@ -42,6 +44,8 @@ export default {
     margin: 0 auto
     margin-top: 30px
     overflow: auto
+    position: relative
+
 
 .menu::-webkit-scrollbar 
     display: block

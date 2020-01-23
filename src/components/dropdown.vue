@@ -22,6 +22,7 @@
 			<div v-bind:class="{ show: options[3].isPressed }" class="dropdown_content">
 				<ul>
 					<li><a href="#">Изменить пароль</a></li>
+					<li @click='unauth()'><a href="#">Выйти</a></li>
 				</ul>
 			</div>
 		</div>
@@ -29,6 +30,7 @@
 </template>
 
 <script>
+import {eventBus} from '../main'
 export default {
 	name: 'dropdown',
 	props: ['options'],
@@ -38,7 +40,11 @@ export default {
 		
 	},
 	methods: {
-
+		unauth() {
+			eventBus.$emit('unauth', {
+				authorized: false
+			})
+		}
 	}
 }
 </script>
@@ -51,12 +57,14 @@ export default {
 	position: absolute
 	left: 0
 	right: 0
+	z-index: 1000
 	&_content
 		display: block
 		width: 200px
 		margin-left: 50px
 		text-align: center
 		visibility: hidden
+		z-index: 500
 		&:first-child
 			margin: 0
 		ul 

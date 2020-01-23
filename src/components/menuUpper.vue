@@ -46,6 +46,7 @@ export default {
 	display: flex
 	margin-top: 30px
 	justify-content: center
+	z-index: 999
 	button
 		width: 200px
 		height: 60px
