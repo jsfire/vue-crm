@@ -3,7 +3,7 @@
 		<div class='dropdown'>
 			<div v-bind:class="{ show: options[0].isPressed }" class="dropdown_content">
 				<ul>
-					<li><a href="#">Открыть смену</a></li>
+					<li><router-link to="/about">Открыть смену</router-link></li>
 					<li><a href="#">Закрыть смену</a></li>
 				</ul>
 			</div>
@@ -57,7 +57,7 @@ export default {
 	position: absolute
 	left: 0
 	right: 0
-	z-index: 1000
+	z-index: 99
 	&_content
 		display: block
 		width: 200px

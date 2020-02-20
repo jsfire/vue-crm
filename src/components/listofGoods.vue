@@ -8,6 +8,15 @@
             <div class="item_price"> Цена: {{good.price}}₽</div>
             <button class='item_sell' @click='addToCart(good)'>Продать</button>
         </div>
+
+    <div :key='idx' v-for='(good, idx) in goods' class='item'>
+            <img :src="good.img" alt="">
+            <div class="item_name">
+                {{ good.name | capitalize }}
+            </div>
+            <div class="item_price"> Цена: {{good.price}}₽</div>
+            <button class='item_sell' @click='addToCart(good)'>Продать</button>
+        </div>
     </div>
 </template>
 
@@ -106,6 +115,7 @@ export default {
             transition: 0.3s all ease-in
             font-size: 16px
             cursor: pointer
+            color: black
             &:hover
                 background: #9969ff
                 color: white

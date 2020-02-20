@@ -304,6 +304,7 @@ export default {
             border: 2px solid #9969ff
             outline: none
             cursor: pointer
+            color: black
             &:hover
                 background: #9969ff
         
@@ -340,6 +341,7 @@ export default {
         cursor: pointer
         margin-top: 30px
         transition: 0.3s all ease
+        color: black
         &:hover
             background: #9969ff
     .active 
@@ -404,6 +406,7 @@ export default {
             cursor: pointer
             z-index: 999
             transition: 0.3s all ease
+            color: black
         a
             grid-row: 1
             width: 40px

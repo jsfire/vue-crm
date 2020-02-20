@@ -59,6 +59,7 @@ export default {
 		margin-left: 50px
 		text-align: center
 		cursor: pointer
+		color: black
 		&:hover
 			background: linear-gradient(90deg, rgba(144,38,215,1) 0%, rgba(143,0,161,1) 100%)
 			color: white

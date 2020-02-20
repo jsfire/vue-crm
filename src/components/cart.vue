@@ -89,11 +89,7 @@ export default {
                 obj.value = 1
             }
         },
-        check(obj, event) {
-            if (event.which == 48) {
-                obj.value = 1
-            }
-        },
+
         clearCart() {
             this.cart = []
             this.sum = 0
@@ -126,7 +122,7 @@ export default {
             if (this.change == 'Невозможно провести транзакцию, внесенная сумма неверна') {
                 this.change = null
             }
-            if (this.change != null) {
+            if (this.change != null && this.income >= this.sum) {
                 db.collection('sales').add({
                 items: this.cart,
                 sum: this.sum,
@@ -250,6 +246,7 @@ export default {
         cursor: pointer
         transition: 0.2s all ease
         font-size: 12px
+        color: black
         &:hover
             background: #72db5a
         &:active
@@ -294,6 +291,7 @@ export default {
             background: #fff
             transition: 0.3s all ease
             font-size: 15px
+            color: black
             &:hover
                 background: #9969ff
                 color: white

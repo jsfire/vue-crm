@@ -45,7 +45,7 @@ export default {
     right: 10px
     top: 5px
     cursor: pointer
-    z-index: 9
+    z-index: 1000000
     img
         width: 100%
     &_orange

@@ -59,6 +59,7 @@ div
 		margin-left: 3px
 		transition: 0.3s all ease
 		cursor: pointer
+		color: black
 		&:first-child
 			border-radius: 50px 0 0 50px
 			margin: 0
