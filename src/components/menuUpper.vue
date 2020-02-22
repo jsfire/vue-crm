@@ -42,6 +42,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="sass">
+@import "@/sass/_variables"
 .menu
 	display: flex
 	margin-top: 30px
@@ -51,7 +52,7 @@ export default {
 		width: 200px
 		height: 60px
 		background: #fff
-		border: 2px solid #9969ff
+		border: 2px solid $border-color
 		font-size: 20px
 		border-radius: 50px
 		outline: none
@@ -61,7 +62,7 @@ export default {
 		cursor: pointer
 		color: black
 		&:hover
-			background: linear-gradient(90deg, rgba(144,38,215,1) 0%, rgba(143,0,161,1) 100%)
+			background: $border-color
 			color: white
 		&:first-child
 			margin: 0

@@ -50,7 +50,7 @@ export default {
 </script>
 
 <style lang='sass' scoped>
-
+@import "@/sass/_variables"
 .dropdown
 	display: flex
 	justify-content: center
@@ -75,20 +75,23 @@ export default {
 				margin: 0 auto
 				width: 150px
 				height: 30px
-				background: linear-gradient(90deg, rgba(144,38,215,1) 0%, rgba(143,0,161,1) 100%)
-				font-size: 15px
+				background: $border-color
+				
 				border-radius: 25px
 				margin-top: 3px
 				transition: 0.3s all ease
 				z-index: 2
 				line-height: 30px
 				&:hover
-					background: linear-gradient(90deg, rgba(143,0,161,1) 51%, rgba(144,38,215,1) 100%)
+					background: #fff
 				a
 					display: block
 					margin-top: 4px
 					text-decoration: none
 					color: white
+					font-size: 15px
+					&:hover
+						color: black
 .show
 	visibility: visible
 </style>

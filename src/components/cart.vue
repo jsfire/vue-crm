@@ -177,6 +177,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "@/sass/_variables"
 @keyframes successAnim
     from
         background: #fff

@@ -8,15 +8,6 @@
             <div class="item_price"> Цена: {{good.price}}₽</div>
             <button class='item_sell' @click='addToCart(good)'>Продать</button>
         </div>
-
-    <div :key='idx' v-for='(good, idx) in goods' class='item'>
-            <img :src="good.img" alt="">
-            <div class="item_name">
-                {{ good.name | capitalize }}
-            </div>
-            <div class="item_price"> Цена: {{good.price}}₽</div>
-            <button class='item_sell' @click='addToCart(good)'>Продать</button>
-        </div>
     </div>
 </template>
 
@@ -76,6 +67,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "@/sass/_variables"
 .menuSele
     display: grid
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -90,7 +82,7 @@ export default {
         color: white
         border-radius: 25px
         position: relative
-        border: 4px #9969ff solid
+        border: 2px $border-color solid
         &:hover
             background: #72db5a
         img
@@ -110,13 +102,13 @@ export default {
             height: 40px
             background: #fff
             outline: none
-            border: 2px solid #9969ff
+            border: 2px solid $border-color
             border-radius: 25px
             transition: 0.3s all ease-in
             font-size: 16px
             cursor: pointer
             color: black
             &:hover
-                background: #9969ff
+                background: $border-color
                 color: white
 </style>

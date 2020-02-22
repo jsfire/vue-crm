@@ -2,7 +2,7 @@
     <div>
         <menuUpper />
         <menuSelection v-if="smth" />
-        <selling />
+
         <menuLower v-if="smth"/>
     </div>
 </template>
@@ -11,15 +11,15 @@
 import menuUpper from '@/components/menuUpper'
 import menuSelection from '@/components/menuSel'
 import menuLower from '@/components/menuLower'
-import selling from '@/components/selling'
+// import selling from '@/components/selling'
 export default {
     name: 'menuMain',
     components:  {
-        menuUpper, menuSelection, menuLower, selling
+        menuUpper, menuSelection, menuLower
     },
     data() {
         return {
-            smth: false
+            smth: true
         }
     }
 }

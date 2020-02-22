@@ -3,7 +3,7 @@
 			<button v-bind:class="{clicked: option.isPressed, disabled: option.disabled}" v-bind:key='idx' v-for='(option, idx) in selections' @click='clicked(option)'>
 				{{option.title}}</button>
 	</div>
-</template>
+</template> 
 
 <script>
 import {eventBus} from '../main'
@@ -42,7 +42,7 @@ export default {
 
 
 <style scoped lang="sass">
-
+@import "@/sass/_variables"
 div
 	margin-top: 30px
 	display: flex
@@ -51,7 +51,7 @@ div
 		display: block
 		width: 200px
 		height: 60px
-		border: 2px #9969ff solid
+		border: 2px $border-color solid
 		text-align: center
 		outline: none
 		background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 100%)

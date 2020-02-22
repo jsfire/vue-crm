@@ -36,10 +36,11 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import "@/sass/_variables"
 .menu
-    width: 1620px
-    height: 550px
-    border: 2px #9969ff solid
+    width: 95%
+    height: 70vh
+    border: 2px $border-color solid
     border-radius: 5px
     margin: 0 auto
     margin-top: 30px

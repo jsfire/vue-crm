@@ -37,6 +37,7 @@ export default {
 </script>
 
 <style lang="sass">
+@import "@/sass/_variables"
 .nom
 .cart
     width: 50px

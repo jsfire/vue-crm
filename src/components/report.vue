@@ -247,6 +247,7 @@ export default {
 </script>
 
 <style lang='sass' scoped>
+@import "@/sass/_variables"
 @keyframes menuActive
     from
         right: -450px
