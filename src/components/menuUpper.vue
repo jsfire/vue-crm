@@ -1,70 +1,40 @@
 <template>
- 
-	<div>
-		<div class='menu'>
-			<button v-bind:key="idx" v-for="(item, idx) in options" v-on:click="item.isPressed = !item.isPressed">{{ item.title}}</button>
-		</div>
-		<dropdown
-		v-bind:options='options'
-		/>
-	</div>
-
-	
-	
+<div>
+  <div>
+    <menubutton/>
+  </div>
+</div>
 </template>
 
 <script>
-import dropdown from '@/components/dropdown'
+import menubutton from '../components/menuUpperButton'
 export default {
-	name: 'menuUpper',
-	components: {
-		dropdown
-	},
-	props: {
+  name: "menuUpper",
+  components: {menubutton},
+  data() {
+    return {
+		buttons: [
+			{id: 0, title: 'Смена', options: ["Открыть смену", "Закрыть смену"], },
+			{id: 1, title: 'Продажа',options: ["Открыть меню продажи"]},
+			{id: 2, title: 'Товар', options: ["Движение товара", "Принять товар", "Отправить товар"]},
+			{id: 3, title: 'Учётная запись', options: ["Изменить пароль", "Выйти"]}
+		],
 
-	},
-	data() {
-		return {
-			options: [
-				{id: 0, title: 'Смена', isPressed: false, counter: 0},
-				{id: 1, title: 'Продажа', isPressed: false, counter: 0},
-				{id: 2, title: 'Товар', isPressed: false, counter: 0},
-				{id: 3, title: 'Учётная запись', isPressed: false, counter: 0}
-			],
-			
-		}
-		
-	},
-	methods: {
-	},
+    }
+  }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="sass">
-@import "@/sass/_variables"
-.menu
+<style lang="sass" scoped>
+div
 	display: flex
-	margin-top: 30px
 	justify-content: center
-	z-index: 999
-	button
-		width: 200px
-		height: 60px
-		background: #fff
-		border: 2px solid $border-color
-		font-size: 20px
-		border-radius: 50px
-		outline: none
-		transition: 0.3s all ease
-		margin-left: 50px
-		text-align: center
-		cursor: pointer
-		color: black
-		&:hover
-			background: $border-color
-			color: white
+	margin: 0
+	margin-top: 10px
+	.buttonPress
+		margin-left: 5%
 		&:first-child
 			margin: 0
+			
 		
 </style>

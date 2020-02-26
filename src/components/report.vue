@@ -5,9 +5,6 @@
                 <button class='sales_report_item name'>
                     Имя продавца 
                 </button>
-                <button  class='sales_report_item id'>
-                    ID продавца
-                </button>
                 <button  class='sales_report_item sum'>
                     Сумма продажи
                 </button>
@@ -18,17 +15,15 @@
                     Выданная сдача
                 </button>
                 <button class='sales_report_item time'>
-                    Дата
+                    Дата 
                 </button>
-                <a @click='sorting = !sorting' href='#'><i class="fas fa-sliders-h"></i></a>
+                
         </div>
+        <v-icon class="open-menu" @click='openSorting()' color="black" x-large>mdi-menu</v-icon>
         <div :key='idx' v-for='(sale, idx) in sales'>
         <div class='sales_report'>
                 <div class='sales_report_item name'>
                     {{sale.seller.name}}
-                </div>
-                <div class='sales_report_item id'>
-                    {{sale.seller.id}}
                 </div>
                 <div class='sales_report_item sum'>
                     {{sale.sum}}₽
@@ -57,62 +52,19 @@
                 </div>
         </div>
         </div>
-    <loader v-if='!gotData' class='loader'/>
-    <div :class='{activated: sorting, deactivated: !sorting}' class='sorting_menu'>
-        <a @click='sorting = !sorting'><i class="fas fa-times"></i></a>
-        <p>Сортировка по:</p>
-        <div class='sort_by'>
-            <button @click='
-            onSum = false
-            onIncome = false
-            onChange = false
-            onSum = true
-            ' :class='{active: onSum}'>Сумме</button>
-            <button @click='
-            onSum = false
-            onIncome = false
-            onChange = false
-            onIncome = true
-            ' :class='{active: onIncome}'>Полученной сумме</button>
-            <button @click='
-            onSum = false
-            onIncome = false
-            onChange = false
-            onChange = true
-            ' :class='{active: onChange}'>Сдаче</button>
-        </div>
-        <div class='on_seller'>
-            <div :key='idx' v-for='(seller, idx) in sellers'>
-                <input checked type='checkbox'/> {{seller.name}}
-            </div>
-        </div>
-        <div class='up_down'>
-            <select v-model='selected'>
-                <option>По возрастанию</option>
-                <option>По убыванию</option>
-            </select>
-        </div>
-        <div class='date_picker'>
-            <p>С</p>
-            <input :value="dateLow && dateLow.toISOString().split('T')[0]"
-                   @input="dateLow = $event.target.valueAsDate" type='date'>
-            <p>По</p>
-            <input :value="dateHigh && dateHigh.toISOString().split('T')[0]"
-                   @input="dateHigh = $event.target.valueAsDate" type='date'>
-        </div>
-        
-        <button @click='sort()'>Сортировать</button>
     
-    </div>
+        <sort/>
+
     </div>
 </template>
 
 <script>
-import loader from '@/components/loader';
-import {db} from '../db';
+import sort from "@/components/sortingmenu"
+import { eventBus } from '../main';
+import {db} from '../db'
 export default {
     components: {
-        loader,
+        sort,
     },
     data() {
         return {
@@ -136,99 +88,38 @@ export default {
             selected: null,
             removed: [],
             sellers: [],
+            overlay: false
         }
     },
+
     methods: {
+        openSorting() {
+            eventBus.$emit('sort-open', {
+                overlay: !this.overlay
+            })
+            // eslint-disable-next-line no-console
+            console.log(this.overlay)
+        },
         timeStamp(time) {
+           
            let date = new Date(time * 1000);
+           let day = date.getDate()
+           let month = date.getMonth() + 1
+           let year = date.getFullYear()
+           let hours = date.getHours()
+           let minutes = date.getMinutes()
 
-           return date
-        },
-        sortBySumOnLow() {
-            this.sales.sort((a, b) => {
-                return a.sum - b.sum
-            })
-        },
-        sortBySumOnHigh() {
-            this.sales.sort((a, b) => {
-                return b.sum - a.sum
-            })
-        },
-        dateforto() {
-            for (let sale of this.sales) {
-                let date = new Date(sale.time.seconds * 1000)
+            
+            
+            
+            
 
-                if (date < this.dateLow) {
-                    this.removed.push(sale)
-                    this.sales = this.sales.filter(time => {
-                        time.time.seconds * 1000 < date
-                    })
-                }
-                if (date > this.dateHigh) {
-                    this.removed.push(sale)
-                    this.sales = this.sales.filter(time => {
-                        time.time.seconds * 1000 > date
-                    })
-                }
 
-            }
+           return (`${year}-${month < 10 ? "0" + month : month}-${day < 10 ? "0" + day : day} ${hours < 10 ? "0" + hours : hours}:${minutes < 10 ? "0" + minutes : minutes}`)
+
         },
-        sortOnIncomeLow() {
-            this.sales.sort((a, b) => {
-            return a.income - b.income
-            })
-        },
-        sortOnIncomeHigh() {
-            this.sales.sort((a, b) => {
-            return b.income - a.income
-            })
-        },
-        sortOnChangeLow() {
-            this.sales.sort((a, b) => {
-            return a.change - b.change
-            })
-        },
-        sortOnChangeHigh() {
-            this.sales.sort((a, b) => {
-            return b.change - a.change
-            })
-        },
-        sort() {
-            if (this.onSum == true) {
-                if (this.selected == 'По возрастанию') {
-                    this.sortBySumOnHigh()
-                }
-                if (this.selected == 'По убыванию') {
-                    this.sortBySumOnLow()
-                }
-                else {
-                    this.sortBySumOnHigh()
-                }
-            }
-            if (this.onIncome == true) {
-                if (this.selected == 'По возрастанию') {
-                    this.sortOnIncomeHigh()
-                }
-                if (this.selected == 'По убыванию') {
-                    this.sortOnIncomeLow()
-                }
-                else {
-                    this.sortOnIncomeHigh()
-                }
-            }
-            if (this.onChange == true) {
-                if (this.selected == 'По возрастанию') {
-                    this.sortOnChangeHigh()
-                }
-                if (this.selected == 'По убыванию') {
-                    this.sortOnChangeLow()
-                }
-                else {
-                    this.sortOnChangeHigh()
-                }
-            }
-        }
     },
+
     filters: {
         capitalize: (value) => {
             if (!value) return ''
@@ -236,10 +127,17 @@ export default {
             return value.charAt(0).toUpperCase() + value.slice(1)
         }
     },
+    created() {
+        eventBus.$on('sort-data', data => {
+            this.sales = data.sales
+        })
+        eventBus.$on('sort-open', data => {
+            this.overlay = data.overlay
+        })
+    },
     firestore() {
         return {
-            sales: db.collection("sales").orderBy("time", "asc"),
-            sellers: db.collection("users")
+            sales: db.collection('sales')
         }
     }
     
@@ -268,7 +166,10 @@ export default {
     animation: menuNot 0.5s ease-in
     animation-fill-mode: forwards
 
-
+.open-menu
+    position: absolute
+    right: 5%
+    top: 14%
 
 
 .sorting_menu
@@ -278,89 +179,92 @@ export default {
     position: fixed
     right: -450px
     top: 170px
-    border: 2px solid #9969ff
-    border-radius: 50px  0  0 50px
+    border: 1px solid $border-color
+    border-radius: 15px  0  0 15px
     z-index: 10000
     a 
         width: 50px
         height: 50px
-        font-size: 35px
+        font-size: 25px
         position: absolute
         left: 0
-        top: 15px
         cursor: pointer
         transition: 0.3s all ease-in
         &:hover
             color: red
     p
-        margin-top: 25px
+        margin: 0
     .sort_by
         display: flex
         justify-content: space-around
-        margin-top: 10px
+
         button
-            width: 100px
+            width: 120px
             height: 40px
             border-radius: 25px
-            border: 2px solid #9969ff
+            border: 1px solid $border-color
             outline: none
             cursor: pointer
             color: black
+            font-size: 13px
+            
+            
             &:hover
-                background: #9969ff
+                background: $border-color
         
 
     .up_down
-        margin-top: 20px
+
         select
             width: 150px
             height: 30px
-            border: 2px solid #9969ff
+            border: 1px solid $border-color
             outline: none
-            border-radius: 25px
+            border-radius: 10px
+            margin-top: 15px
     .date_picker
-        margin-top: 40px
+
         input
-            margin-top: 10px
+            margin-top: 15px
             width: 150px
             height: 40px
             text-align: center
-            border-radius: 25px
-            border: 2px solid #9969ff
+            border-radius: 15px
+            border: 1px solid $border-color
             outline: none
             &::-webkit-inner-spin-button 
                 display: none
         p
-            margin-top: 10px
+           margin: 0
     button
         width: 100px
         height: 40px
-        border-radius: 25px
-        border: 2px solid #9969ff
+        border-radius: 15px
+        border: 1px solid $border-color
         background: #fff
         outline: none
         cursor: pointer
-        margin-top: 30px
         transition: 0.3s all ease
         color: black
+        margin-top: 15px
         &:hover
-            background: #9969ff
+            background: $border-color
     .active 
-        background: #9969ff
+        background: $border-color
 .loader
     position: absolute
     left: 50%
     top: 50%
     transform: translate(-50%,-50%)
 .active
-    background: #9969ff
+    background: $border-color
 
 .items
     width: 40%
     height: 40px
     display: grid
     margin: 0 auto
-    border: 2px #9969ff solid
+    border: 1px solid $border-color
     border-radius: 50px
     align-items: center
     margin-top: -45px
@@ -377,12 +281,12 @@ export default {
     height: 40px
     display: grid
     margin: 0 auto
-    border: 2px #9969ff solid
-    border-radius: 50px
+    border: 1px solid $border-color
+    border-radius: 15px
     align-items: center
     margin-top: 15px
     text-align: center
-    grid-template-columns: 150px 200px 100px 100px 100px
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr
     background-color: white
     z-index: 999
     
@@ -391,22 +295,20 @@ export default {
         height: 40px
         display: grid
         margin: 0 auto
-        border-radius: 50px
+        border-radius: 25px
         align-items: center
         margin-top: 15px
         text-align: center
-        grid-template-columns: 150px 200px 100px 100px 100px 890px
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr
         z-index: -1
         button
-            width: 95%
+            width: 98%
             height: 40px
-            border-radius: 50px
-            border: 2px solid #9969ff
+            border-radius: 15px
+            border: 1px solid $border-color
             background: #fff
             outline: none
             cursor: pointer
-            z-index: 999
-            transition: 0.3s all ease
             color: black
         a
             grid-row: 1

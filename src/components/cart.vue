@@ -1,42 +1,44 @@
 <template>
     <div>
-        <div class='cart_form'>
-            <div class="cart_form_descr">Вы добавили: </div>
-            <div class="cart_form_items">
-                <div :key='idx' v-for='(goods, idx) in cart' class="cart_form_items_item">
-                    <img :src="goods.img" alt="">
-                    <div class="name">{{goods.name | capitalize}}</div>
-                    <div  class="price"><input class='value' v-bind:value="goods.price * goods.value + '₽'" disabled></div>
-                    <div class="amount">
-                        <button @click='addValue(goods)'>+</button>
-                        <input type='number' v-model.Number='goods.value' @keypress='check(goods, $event)' class="amount">
-                        <button @click='deleteValue(goods)'>-</button>
+        <v-overlay opacity="0.9" z-index="500" :value="clicked">
+            <div class='cart_form'>
+                <div class="cart_form_descr">Вы добавили: </div>
+                <div class="cart_form_items">
+                    <div :key='idx' v-for='(goods, idx) in cart' class="cart_form_items_item">
+                        <img :src="goods.img" alt="">
+                        <div class="name">{{goods.name | capitalize}}</div>
+                        <div  class="price"><input class='value' v-bind:value="goods.price * goods.value + '₽'" disabled></div>
+                        <div class="amount">
+                            <button @click='addValue(goods)'>+</button>
+                            <input type='number' v-model.Number='goods.value' @keypress='check(goods, $event)' class="amount">
+                            <button @click='deleteValue(goods)'>-</button>
+                        </div>
+                        <button @click='deleteFromCart(goods)'>X</button>
+                        
                     </div>
-                    <button @click='deleteFromCart(goods)'>X</button>
                     
                 </div>
+                <div class="cart_form_btns">
+                    <button @click='pay_form_check = !pay_form_check, income = null, change = null' class='cart_form_btns_cash' >Оплата</button>
+                    <div class="div">Сумма: {{ sumCart() }}₽</div>
+                    <button @click='clearCart()'>Очистить  корзину</button>
+                </div>
                 
-            </div>
-            <div class="cart_form_btns">
-                <button @click='pay_form_check = !pay_form_check, income = null, change = null' class='cart_form_btns_cash' >Оплата</button>
-                <div class="div">Сумма: {{ sumCart() }}₽</div>
-                <button @click='clearCart()'>Очистить  корзину</button>
-            </div>
-            
-            <div v-if='pay_form_check' class='pay_form'>
-                <div class='sum'>Сумма к оплате: {{sum}}</div>
-                <div class='pay_form_select'>Выберите способ оплаты: </div>
-                    <select>
-                        <option>Наличные</option>
-                    </select>
-                <input type='number' v-model='income' @input='findChange()' placeholder='Внесено ₽'>
-                <div class='pay_form_need'>Сдача: {{change}}</div>
-                <button @click='transaction()'>Успешная оплата</button>
-                <button @click='pay_form_check = !pay_form_check, income = null, change = null'>Отклонить оплату</button>
-            </div>
+                <div v-if='pay_form_check' class='pay_form'>
+                    <div class='sum'>Сумма к оплате: {{sum}}</div>
+                    <div class='pay_form_select'>Выберите способ оплаты: </div>
+                        <select>
+                            <option>Наличные</option>
+                        </select>
+                    <input type='number' v-model='income' @change="findChange()" placeholder='Внесено ₽'>
+                    <div class='pay_form_need'>Сдача: {{change}}  </div>
+                    <button @click='transaction()'>Успешная оплата</button>
+                    <button @click='pay_form_check = !pay_form_check, income = null, change = null'>Отклонить оплату</button>
+                </div>
 
-            <div v-if='transactionSucces' class='success'><p>Успешная оплата</p></div>
-        </div>
+                <div v-if='transactionSucces' class='success'><p>Успешная оплата</p></div>
+            </div>
+        </v-overlay>
     </div>
 </template>
 
@@ -54,12 +56,16 @@ export default {
             change: null,
             pay_form_check: false,
             transactionSucces: false,
-            username: []
+            username: [],
+            overlay: false,
         }
     },
+    props: ["clicked"],
     created() {
         eventBus.$on('transfer-cart', data => {
             this.cart = data.cart
+            // eslint-disable-next-line no-console
+            console.log("Added")
             })
         eventBus.$on('username', data => {
             this.username = data.user
@@ -78,16 +84,25 @@ export default {
         deleteFromCart(obj) {
             let index = this.cart.indexOf(obj)
             this.sum = this.sum - this.cart[index].price * this.cart[index].value
-            this.cart.splice(index, 1) 
+            this.cart.splice(index, 1)
+            eventBus.$emit('transfer-cart', {
+                cart: this.cart
+            })
         },
         addValue(obj) {
             obj.value++
+            eventBus.$emit('transfer-cart', {
+                cart: this.cart
+            })
         },
         deleteValue(obj) {
             obj.value--
             if (obj.value < 1) {
                 obj.value = 1
             }
+            eventBus.$emit('transfer-cart', {
+                cart: this.cart
+            })
         },
 
         clearCart() {
@@ -95,6 +110,9 @@ export default {
             this.sum = 0
             eventBus.$emit('clearCart', {
                 cart: []
+            })
+            eventBus.$emit('transfer-cart', {
+                cart: this.cart
             })
         },
         sumCart() {
@@ -113,6 +131,10 @@ export default {
                 return result
             } 
             
+        },
+        check() {
+            // eslint-disable-next-line no-console
+            console.log(this.cart)
         },
         transaction() {
             let date = new Date()
@@ -156,7 +178,7 @@ export default {
                 this.change = 'Внесенная сумма меньше суммы товаров'
             }
             if (this.income == this.sum) {
-                this.change = 'Сдача не требуется'
+               this.change = 'Сдача не требуется'
             }
             if (this.income > this.sum) {
                 this.change = this.income - this.sum
@@ -170,6 +192,10 @@ export default {
             return sum + parseInt(item.TOTAL)
             }, 0)
         },
+        find() {
+            return this.findChange();
+
+        }
 
     }
 }
@@ -194,7 +220,7 @@ export default {
     left: 50%
     top: 50%
     transform: translate(-50%, -50%)
-    border: 4px solid #9969ff
+    border: 1px solid $border-color
     border-radius: 25px
     background: #fff
     animation: successAnim 3s infinite
@@ -209,12 +235,15 @@ export default {
     left: 50%
     top: 50%
     transform: translate(-50%, -50%)
-    border: 4px solid #9969ff
-    border-radius: 25px
+    border: 1px solid $border-color
+    border-radius: 15px
     background: #fff
     display: grid
     grid-template-rows: 60px 60px 60px 60px
     justify-items: center
+    z-index: 600
+    color: black
+    text-align: center
     .sum
         margin-top: 25px
     &_select
@@ -226,36 +255,36 @@ export default {
     select
         width: 150px
         height: 30px
-        border-radius: 25px
+        border-radius: 8px
         outline: none
-        border: 2px solid #9969ff
+        border: 1px solid $border-color
     input
         width: 150px
         height: 25px
-        border: 2px solid #9969ff
-        border-radius: 25px
+        border: 1px solid $border-color
+        border-radius: 8px
         outline: none
         text-align: center
     button
         width: 130px
         height: 30px
         margin: 5px
-        border: 2px solid #9969ff
+        border: 1px solid $border-color
         background: #fff
-        border-radius: 25px
+        border-radius: 8px
         outline: none
         cursor: pointer
         transition: 0.2s all ease
         font-size: 12px
         color: black
         &:hover
-            background: #72db5a
+            background: $border-color
         &:active
             background: green
             color: white
         &:last-child
             &:hover
-                background: #ff5a36
+                background: $border-color
             &:active
                 background: darkred
                 color: white
@@ -270,22 +299,25 @@ export default {
     left: 50%
     top: 50%
     transform: translate(-50%, -50%)
-    border: 4px solid #9969ff
-    border-radius: 25px
+    border: 1px solid $border-color
+    border-radius: 15px
     box-shadow: 0 0 30px rgba(0,0,0,0.5)
-    z-index: 5
+    z-index: 600
     padding: 10px 0 10px 0
+    color: black
+    text-align: center
     &_descr
         text-align: center
         font-size: 18px
+        z-index: 600
     &_btns
-        margin-top: 20px
         display: flex
         justify-content: space-around
+        margin-top: 15px
         button
             width: 150px
             height: 40px
-            border: 2px solid #9969ff
+            border: 1px solid $border-color
             border-radius: 25px
             outline: none
             cursor: pointer
@@ -293,12 +325,13 @@ export default {
             transition: 0.3s all ease
             font-size: 15px
             color: black
+            
             &:hover
-                background: #9969ff
+                background: $border-color
                 color: white
             &:active
                 transition: none
-                background: #72db5a
+                background: $border-color
                 color: black
 
     &_items
@@ -313,9 +346,9 @@ export default {
         justify-items: center
         position: relative
         &_total
-            border-radius: 25px
+            border-radius: 15px
             width: 950px
-            border: 2px solid #9969ff
+            border: 1px solid $border-color
             height: 0%
             position: sticky
             background: #fff
@@ -333,8 +366,8 @@ export default {
             color: black
             width: 950px
             height: 50px
-            border: 2px solid #9969ff
-            border-radius: 25px
+            border: 1px solid $border-color
+            border-radius: 15px
             margin-top: 10px
             background: #fff
             &_price
@@ -342,15 +375,16 @@ export default {
                     border: none
                     background: #fff
                     font-size: 18px
+                    width: 50px
             img
                 width: 50px
                 height: 50px
             input
-                width: 45px
+                width: 55px
                 height: 45px
                 text-align: center
                 outline: none
-                border: 2px solid #9969ff
+                border: 1px solid $border-color
                 border-radius: 25%
                 &::-webkit-outer-spin-button,
                 &::-webkit-inner-spin-button 
@@ -360,7 +394,7 @@ export default {
                 width: 30px
                 height: 30px
                 margin: 5px
-                border: 2px solid #9969ff
+                border: 1px solid $border-color
                 background: #fff
                 border-radius: 25%
                 outline: none
@@ -368,7 +402,7 @@ export default {
                 transition: 0.2s all ease
                 font-size: 12px
                 &:hover
-                    background: #9969ff
+                    background: $border-color
                 &:active
-                    background: #72db5a
+                    background: $border-color
 </style>

@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {eventBus} from '../main'
+
 export default {
 	name: 'dropdown',
 	props: ['options'],
@@ -39,20 +39,15 @@ export default {
 		}
 		
 	},
-	methods: {
-		unauth() {
-			eventBus.$emit('unauth', {
-				authorized: false
-			})
-		}
-	}
+	
+	
 }
 </script>
 
 <style lang='sass' scoped>
 @import "@/sass/_variables"
 .dropdown
-	display: flex
+	display: none
 	justify-content: center
 	position: absolute
 	left: 0

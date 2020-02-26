@@ -9,6 +9,7 @@
 import { eventBus } from "../main";
 import fastMarket from '@/components/fastMarket'
 import report from '@/components/report'
+
 export default {
     name: 'menuSelection',
     components: {
@@ -39,13 +40,11 @@ export default {
 @import "@/sass/_variables"
 .menu
     width: 95%
-    height: 70vh
-    border: 2px $border-color solid
-    border-radius: 5px
+    height: 75vh
     margin: 0 auto
-    margin-top: 30px
+    margin-top: 10px
     overflow: auto
-    position: relative
+    
 
 
 .menu::-webkit-scrollbar 
