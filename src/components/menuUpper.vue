@@ -1,24 +1,48 @@
 <template>
 <div>
-  <div>
-    <menubutton/>
-  </div>
+  <v-app-bar>
+		<v-container fluid class="cont">
+			<v-row align="center">
+				<v-col sm="2" md="2">
+					<v-row justify="start">
+						<userbar/>
+					</v-row>
+					
+				</v-col>
+				
+				<v-col sm="2" md="2">
+					<v-row justify="start">
+						<clock/>
+					</v-row>
+				</v-col>
+				
+				<v-col md="7">
+					<v-row justify="center">
+						<menubutton/>
+					</v-row>
+				</v-col>
+				<v-col sm="1" md="1">
+					<v-row justify="center">
+						<opencart/>
+					</v-row>
+				</v-col>
+			</v-row>
+		</v-container>
+			
+  </v-app-bar>
 </div>
 </template>
 
 <script>
+import userbar from "../components/userbar"
 import menubutton from '../components/menuUpperButton'
+import clock from "../components/clock"
+import opencart from "../components/opencart"
 export default {
   name: "menuUpper",
-  components: {menubutton},
+  components: {menubutton, clock, userbar, opencart},
   data() {
     return {
-		buttons: [
-			{id: 0, title: 'Смена', options: ["Открыть смену", "Закрыть смену"], },
-			{id: 1, title: 'Продажа',options: ["Открыть меню продажи"]},
-			{id: 2, title: 'Товар', options: ["Движение товара", "Принять товар", "Отправить товар"]},
-			{id: 3, title: 'Учётная запись', options: ["Изменить пароль", "Выйти"]}
-		],
 
     }
   }
@@ -26,15 +50,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-div
-	display: flex
-	justify-content: center
-	margin: 0
-	margin-top: 10px
-	.buttonPress
-		margin-left: 5%
-		&:first-child
-			margin: 0
-			
+.cont
+	width: 100%
 		
 </style>

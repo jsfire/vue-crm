@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-if="0">
 		<div class="buttons" :key="index" v-for="(option, index) of selections">
 			<v-btn dark x-large outlined rounded color="#3498db" class="buttons-btn" @click="clicked(option)">{{option.title}}</v-btn>
 		</div>		

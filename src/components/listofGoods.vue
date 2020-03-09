@@ -8,25 +8,68 @@
             :elevation="hover ? 16 : 2"
             class="mx-auto card-item"
             max-width="344"
-            outlined>
+            >
             <div class="card-item-image">
                 <img :src="good.img">
             </div>
             
-            <p>{{good.name | capitalize}}</p>
-            <p>{{good.price}}₽</p>
+            <p class="descr-name">{{good.name | capitalize}}</p>
+            <div class="description">
+            <v-container class="column-height">
+                <v-row>
+                    <v-col class="column-height" col="2">
+                        <v-spacer></v-spacer>
+                    </v-col>
+                    <v-col class="column-height" col="4">
+                        <p class="description-price">{{good.price}}₽</p>
+                    </v-col>
+                    <v-col class="column-height" col="4">
+                        <p class="description-price">{{good.remain}}шт.</p>
+                    </v-col>
+                    <v-col class="column-height" col="2">
+                        <v-spacer></v-spacer>
+                    </v-col>
+                </v-row>
+                
+            </v-container>    
+                
+                
+            </div>
+            <v-container>
+                <v-row>
+                    <v-col class="column-height" col="1">
+                        <v-spacer></v-spacer>
+                    </v-col>
+                    <v-col class="column-height" col="1">
+                        <v-row justify="center">
+                            <v-btn @click="deleteValue(good)" color="#3498db" outlined x-small fab><v-icon>mdi-minus</v-icon></v-btn>
+                        </v-row>
+                    </v-col>
+                    <v-col class="column-height" col="8">
+                        <v-row justify="center">
+                            <div class="amount">{{good.amount}} шт.</div>
+                        </v-row>
+                    </v-col>
+                    <v-col class="column-height" col="1">
+                        <v-row justify="center">
+                            <v-btn color="#3498db" @click="addValue(good)" outlined x-small fab><v-icon>mdi-plus</v-icon></v-btn>
+                        </v-row>
+                    </v-col>
+                    <v-col class="column-height" col="1">
+                        <v-spacer></v-spacer>
+                    </v-col>
+                </v-row>
+               
+            </v-container>
             <v-btn
-            dark
             rounded
             v-on="on"
             class="buttonPr"
             medium
-            outlined
             color="#3498db"
             @click="addToCart(good)"
             >
-            Продать
-            <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
+            Добавить
             </v-btn>
             </v-card>
         </v-hover>
@@ -71,7 +114,8 @@ export default {
                 name: obj.name,
                 price: obj.price,
                 img: obj.img,
-                value: 1
+                amount: obj.amount,
+                remain: obj.remain
             })
             for (let i = 0; i < this.cart.length - 1; i++) {
                 if (this.cart[i+1].name == this.cart[i].name) {
@@ -83,7 +127,20 @@ export default {
             eventBus.$emit('transfer-cart', {
                 cart: this.cart
             })
-        }
+            obj.amount = 1
+        },
+        addValue(obj) {
+            obj.amount++
+            if (obj.amount > obj.remain) {
+                obj.amount = obj.remain
+            }
+        },
+        deleteValue(obj) {
+            obj.amount--
+            if (obj.amount < 1) {
+                obj.amount = 1
+            }
+        },
     }
     
 }
@@ -106,8 +163,21 @@ export default {
                     width: 100%
                     height: 100%
             .buttonPr
-                color: black
-                
+                color: white
+.descr        
+    &-name
+        font-weight: 500
+.description
+    &-price
+        font-weight: 600
 
+.amount
+    width: 76px
+    height: 31px
+    border: 1px solid #3498DB
+    padding: 2px
+    border-radius: 31px
+.column-height
+    height: 70px
 
 </style>

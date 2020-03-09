@@ -1,80 +1,156 @@
 <template> 
-        <v-overlay :value="overlay" opacity="0.8">
-                <v-select v-model="salesName" placeholder="Выберите продавца" label="Сортировка по продавцу" :items="users" item-text="name"></v-select>
-            
-
-            
-            
-            
-            
-            <v-radio-group row v-model="radios" :mandatory="false">
-                        <v-radio color="#3498db" label="По сумме" value="1"/>
-                        <v-radio color="#3498db" label="По полученной сумме" value="2"/>
-                        <v-radio color="#3498db" label="По сдаче" value="3"/>
-            </v-radio-group>
-                
-        
-        
-            <v-select color="#3498db"
-                :items="items"
-                v-model="selected"
-                label="Возрастание/Убывание"
-                ></v-select>
-                
-            
-               
+<v-overlay :value="overlay" class="overlay" opacity="0.1">
+    <div class="open-menu">
+        <v-container>
+            <v-row>
+                <v-col auto>
+                    <v-row justify="start">
+                        <span class="menu-title">Сортировка</span>
+                    </v-row>
+                </v-col>
+                <v-col auto>
+                    <v-row justify="end">
+                        <v-btn @click="back()" x-large text light color="#3498db">
+                            Закрыть
+                        </v-btn>
+                    </v-row>
+                </v-col>
+            </v-row>
+        </v-container>
+        <v-container style="margin-top: -30px">
+            <v-row>
+                <v-col md="2" class="sorting-title">
+                    <v-row justify="start">
+                        <span>Сортировка по продавцу</span>
+                    </v-row>
+                    <v-row style="margin-top: 15px" justify="center">
+                        <v-select offset-y filled dense v-model="salesName" light shaped placeholder="Сортировка по продавцу" :items="users" item-text="name"></v-select>
+                    </v-row>
+                <v-row justify="start">
+                    <span>По возрастанию/убыванию</span>
+                </v-row>
+                <v-row style="margin-top: 10px" justify="start">
+                    <v-select filled shaped dense placeholder="По возрастанию/убыванию" v-model="selected" light :items="items"></v-select>
+                </v-row>
+                </v-col>
+                <v-col md="4" class="sorting-title">
+                    <v-row justify="center">
+                        <v-col md="4">
+                            <v-row style="height: 27px" justify="center">
+                               <v-spacer></v-spacer>
+                            </v-row>
+                            <v-row justify="center">
+                                <v-radio-group row large light v-model="radios" :mandatory="false">
+                                    <v-radio label="Сумме" color="#3498db" value="1"></v-radio>
+                                </v-radio-group>
+                            </v-row>
+                        </v-col>
+                        <v-col md="4">
+                            <v-row align="center" justify="center">
+                                <span>Сортировать по</span>
+                            </v-row>
+                            <v-row justify="center">
+                                <v-radio-group row large light v-model="radios" :mandatory="false">
+                                    <v-radio label="Полученной сумме" color="#3498db" value="2"></v-radio>
+                                </v-radio-group>
+                            </v-row>
+                        </v-col>
+                        <v-col md="4">
+                            <v-row style="height: 27px" justify="center">
+                                <v-spacer></v-spacer>
+                            </v-row>
+                            <v-row justify="center">
+                                <v-radio-group row  large light v-model="radios" :mandatory="false">
+                                    <v-radio label="Сдаче" color="#3498db" value="3"></v-radio>
+                                </v-radio-group>
+                            </v-row>
+                        </v-col>
+                         
+                    </v-row>
                     
-            <v-menu
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-          min-width="290px"
-        >
+                </v-col>
+                            <v-col md="1">
+                <v-spacer></v-spacer>
+            </v-col>
+                <v-col class="sorting-title" md="2">
+                    <v-row justify="center">
+                        <span>Дата</span>
+                    </v-row>
+                    <v-row justify="center">
+
+                        <v-menu
+                            light
+                            ref="menu1"
+                            v-model="menu1"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="290px"
+                            >
           <template v-slot:activator="{ on }">
-            <v-text-field color="#3498db"
+            <v-text-field
+              light
               v-model="date1"
-              label="С"
-              hint="Дата в формате Год/Месяц/День"
-              persistent-hint
-              prepend-icon="mdi-event"
-              readonly
+              label="С даты"
               v-on="on"
+              filled
+              shaped
+              dense
             ></v-text-field>
           </template>
-          <v-date-picker color="#3498db" v-model="date1" no-title @input="menu2 = false"></v-date-picker>
+          <v-date-picker v-model="date1"></v-date-picker>
         </v-menu>
 
-            
-        <v-menu
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-          min-width="290px"
-        >
+                    </v-row>
+                    <v-row justify="center">
+
+                        <v-menu
+                            light
+                            ref="menu1"
+                            v-model="menu1"
+                            :close-on-content-click="false"
+                            transition="scale-transition"
+                            offset-y
+                            max-width="290px"
+                            min-width="290px"
+                            >
           <template v-slot:activator="{ on }">
-            <v-text-field color="#3498db"
+            <v-text-field
+              light
               v-model="date2"
-              label="По"
-              hint="Дата в формате Год/Месяц/День"
-              persistent-hint
-              prepend-icon="mdi-event"
-              readonly
+              label="По дату"
               v-on="on"
+              filled
+            shaped
+              dense
             ></v-text-field>
           </template>
-          <v-date-picker color="#3498db" v-model="date2" no-title @input="menu2 = false"></v-date-picker>
+          <v-date-picker v-model="date2"></v-date-picker>
         </v-menu>
-        
 
-        <v-btn @click="sort()" class="buttons" large color="#3498db">Сортировать</v-btn>
+                    </v-row>
+                </v-col>
+            <v-col md="1">
+                <v-spacer></v-spacer>
+            </v-col>
+            <v-col md="2">
+                <v-row justify="end">
+                    <v-btn @click="sort()" rounded dark color="#3498DB">
+                        Сортировать
+                    </v-btn>
+                </v-row>
+                <v-row style="margin-top: 25px" justify="end">
+                    <v-btn @click="revert()" rounded dark color="#CB6363">
+                        Вернуть исходные значения
+                    </v-btn>
+                </v-row>
+            </v-col>
+            </v-row>
 
-        <v-btn @click="revert()" large color="error" class="buttons">Вернуть начальное <br> состояние</v-btn>
-
-        <v-btn @click="back()" large color="error" class="buttons">Назад</v-btn>
-            
-        </v-overlay>
+        </v-container>
+    </div>
+</v-overlay>
 </template>
 
 <script>
@@ -91,7 +167,7 @@ export default {
             items: ["По возрастанию", "По убыванию"],
             radios: '1',
             salesDB: [],
-            selected: "asdasdasd",
+            selected: "",
             overlay: false,
             sellers: [],
             salesName: ""
@@ -262,9 +338,23 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.open-menu
+    position: fixed
+    height: 300px
+    background: white
+    width: 100%
+    bottom: 0
+    left: 0
+    transfrom: translateX(-50%)
+    color: black
 
-.buttons
-    margin-top: 20%
-    margin-left: 10%
+.menu-title
+    color: black
+    font-weight: 500
+    font-size: 24px
+
+.sorting-title
+    font-weight: 600
+    font-size: 18px
 
 </style>

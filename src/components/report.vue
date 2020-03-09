@@ -1,59 +1,140 @@
 <template>
-    <div>
-        <div v-if='gotData'>
-        <div class='sales_report_info'>
-                <button class='sales_report_item name'>
-                    Имя продавца 
-                </button>
-                <button  class='sales_report_item sum'>
-                    Сумма продажи
-                </button>
-                <button  class='sales_report_item income'>
-                    Полученная сумма
-                </button>
-                <button  class='sales_report_item change'>
-                    Выданная сдача
-                </button>
-                <button class='sales_report_item time'>
-                    Дата 
-                </button>
-                
-        </div>
-        <v-icon class="open-menu" @click='openSorting()' color="black" x-large>mdi-menu</v-icon>
-        <div :key='idx' v-for='(sale, idx) in sales'>
-        <div class='sales_report'>
-                <div class='sales_report_item name'>
-                    {{sale.seller.name}}
-                </div>
-                <div class='sales_report_item sum'>
-                    {{sale.sum}}₽
-                </div>
-                <div class='sales_report_item income'>
-                    {{sale.income}}₽
-                </div>
-                <div class='sales_report_item change'>
-                    {{sale.change}}₽
-                </div>
-                <div class='sales_report_item time'>
-                    {{timeStamp(sale.time.seconds)}}
-                </div>
-            </div>
-                <div class='items'>
-                <div>Проданные товары:</div>
-                <div :key='idx' v-for='(items, idx) in sale.items'>
+
+<div class="wrapperreport">
+        <v-container fluid class="container" >
+            <v-row align="center" class="container-margin">
+                <v-col md="2">
+                    <v-row justify="center">
+                        <div>
+                            Имя продавца 
+                        </div>
+                    </v-row>
                     
-                    <div class='items_name'>
-                        {{items.name | capitalize}}
-                    </div>
-                    <div class='items_price'>
-                        {{items.price}}₽
-                    </div>
-                </div>
-                </div>
-        </div>
-        </div>
+                </v-col>
+                <v-col md="2">    
+                    <v-row justify="center">
+                        <div>
+                            Сумма продажи
+                        </div>
+                    </v-row>
+                </v-col>
+                <v-col md="2">
+                   <v-row justify="center">
+                        <div>
+                            Полученная сумма
+                        </div>
+                    </v-row>
+                </v-col>
+                <v-col md="2">
+                    <v-row justify="center">
+                        <div>
+                            Выданная сдача
+                        </div>
+                    </v-row>
+                </v-col>
+                <v-col md="1">
+                    <v-row justify="end">
+                        <div>
+                            Дата
+                        </div>
+                    </v-row>
+                </v-col>
+                <v-col>
+                    <v-row justify="end">
+                        <v-btn @click="openSorting()" x-large style="color: white" rounded color="#3498db"><v-icon left>mdi-cached</v-icon>Сортировка</v-btn>
+                    </v-row>
+                </v-col>
+            </v-row>   
+        </v-container>
+
     
+                
+        
+        <v-expansion-panels  flat hover focusable multiple>
+            <v-expansion-panel  class="panel open elevation-0" v-for="(item,i) in sales" :key="i">
+                <v-expansion-panel-header>
+                    <v-container>
+                        <v-row>
+                            <v-col md="2">
+                                <v-row justify="center">
+                                    <div>
+                                        {{item.seller.name}}
+                                    </div>
+                                </v-row>
+                            </v-col>
+                            <v-col md="2">
+                                <v-row justify="center">
+                                    <div>
+                                        {{item.sum}}
+                                    </div>
+                                </v-row>
+                            </v-col>
+                            <v-col md="2">
+                                <v-row justify="center">
+                                    <div>
+                                        {{item.income}}
+                                    </div>
+                                </v-row>
+                            </v-col>
+                            <v-col md="2">
+                                <v-row justify="center">
+                                    <div>
+                                        {{item.change}}
+                                    </div>
+                                </v-row>
+                            </v-col>
+                            <v-col md="2">
+                                <v-row justify="center">
+                                    <div>
+                                        {{timeStamp(item.time.seconds)}}
+                                    </div>
+                                </v-row>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                    <v-container fluid>
+                        <v-row>
+                            <v-col auto>
+                                Название товара
+                            </v-col>
+                            <v-col auto>
+                                Цена товара
+                            </v-col>
+                            <v-col auto>
+                                Количество товара
+                            </v-col>
+                        </v-row>
+                        <v-divider/>
+                    </v-container>
+                    <v-container :key="index" v-for="(items, index) in item.items" fluid>
+                        <v-row>
+                            <v-col auto>
+                                <div >
+                                    {{items.name}}
+                                </div>
+                            </v-col>
+                            <v-col auto>
+                                <div>
+                                    {{items.price}}
+                                </div>
+                            </v-col>
+                            <v-col auto>
+                                <div>
+                                    {{items.value}}
+                                </div>
+                            </v-col>
+                         </v-row>
+                         <v-divider/>
+                    </v-container>
+                        
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+        </v-expansion-panels>
+        
         <sort/>
+        
 
     </div>
 </template>
@@ -170,6 +251,7 @@ export default {
     position: absolute
     right: 5%
     top: 14%
+    z-index: 555
 
 
 .sorting_menu
@@ -329,6 +411,20 @@ export default {
     .sum .income .change
         text-align: end
 
+.panel
+    margin-top: 15px
+    font-size: 20px
+    font-weight: 500
+
+.open
+    border: 2px $border-color solid
+    border-radius: 50px !important
+
+.container-margin
+    font-weight: 500
+    font-size: 20px
+
+.sorting-menu
 
 
 </style>

@@ -1,108 +1,38 @@
 <template>
 <div class="container">
-    <div class="text-center">
-    <v-menu offset-y transition="slide-y-transition" >
+
+   <div class="text-center">   
+    <v-menu class="button" offset-y transition="slide-y-transition" >
       <template v-slot:activator="{ on }">
-        <v-btn
-          dark
-			rounded
-          v-on="on"
-          class="buttonPr"
-		x-large
-		outlined
-		color="#3498db"
-		
-		
-        >
-          Смена
-        </v-btn>
+        <v-btn @click="openBigSelling()" text :x-large="$vuetify.breakpoint.xlAndUp">Продажа</v-btn>
       </template>
-      <v-list >
-        <v-list-item class="item">
-          <v-list-item-title >Открыть смену</v-list-item-title>
-        </v-list-item>
-        <v-list-item  class="item">
-          <v-list-item-title >Закрыть смену</v-list-item-title>
-        </v-list-item>
-      </v-list>
+      
     </v-menu>
 
-        <v-menu offset-y transition="slide-y-transition" >
+
+
+	<v-menu class="button" offset-y transition="slide-y-transition" >
       <template v-slot:activator="{ on }">
-        <v-btn
-          dark
-			rounded
-          v-on="on"
-          class="buttonPr"
-		x-large
-		outlined
-		color="#3498db"
-		
-		
-        >
-          Продажа
-        </v-btn>
+        <v-btn @click="openFastMarket()" text :x-large="$vuetify.breakpoint.xlAndUp">Быстрая продажа</v-btn>
       </template>
-      <v-list >
-        <v-list-item @click="openMenu()" class="item">
-          <v-list-item-title >Открыть меню продажи</v-list-item-title>
-        </v-list-item>
-      </v-list>
     </v-menu>
 
-	<v-menu offset-y transition="slide-y-transition" >
+	<v-menu class="button" offset-y transition="slide-y-transition" >
       <template v-slot:activator="{ on }">
-        <v-btn
-          dark
-			rounded
-          v-on="on"
-          class="buttonPr"
-		x-large
-		outlined
-		color="#3498db"
-		
-		
-        >
-          Товар
-        </v-btn>
+        <v-btn @click="openOrders()" text :x-large="$vuetify.breakpoint.xlAndUp">Заказы</v-btn>
       </template>
-      <v-list >
-        <v-list-item class="item">
-          <v-list-item-title >Движение товара</v-list-item-title>
-        </v-list-item>
-        <v-list-item  class="item">
-          <v-list-item-title >Принять товар</v-list-item-title>
-        </v-list-item>
-      </v-list>
     </v-menu>
-	<v-menu offset-y transition="slide-y-transition" >
+
+
+	<v-menu class="button" offset-y transition="slide-y-transition" >
       <template v-slot:activator="{ on }">
-        <v-btn
-          dark
-			rounded
-          v-on="on"
-          class="buttonPr"
-		x-large
-		outlined
-		color="#3498db"
-		
-		
-        >
-          Учётная запись
-        </v-btn>
+        <v-btn @click="openReport()" text :x-large="$vuetify.breakpoint.xlAndUp">Отчёт</v-btn>
       </template>
-      <v-list >
-        <v-list-item class="item">
-          <v-list-item-title >Изменить пароль</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="unauth()" class="item">
-          <v-list-item-title>Выйти</v-list-item-title>
-        </v-list-item>
-      </v-list>
     </v-menu>
-  </div>
+    </div>
+    
+
 </div>
-	
 </template>
 
 <script>
@@ -111,30 +41,90 @@ import {eventBus} from '../main'
 export default {
     name: "menuButton",
     data: () => ({
-      items: [
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-        { title: 'Click Me' },
-      ],
-      globalSelling: false
+		fastMarket: false,
+		report: false,
+		globalSelling: false,
+		orders: false,
     }),
     props: {
     name: {},
     method: {}
 	},
 	methods: {
-		unauth() {
-			eventBus.$emit('unauth', {
-				authorized: false
+		
+			clicked(event) {
+			this.selections[0].isPressed = false;
+			this.selections[1].isPressed = false
+			this.selections[2].isPressed = false
+			this.selections[3].isPressed = false
+			event.isPressed = !event.isPressed
+			eventBus.$emit('clicksss', {
+			firstButton: this.selections[0].isPressed,
+			secondButton: this.selections[1].isPressed,
+			thirdButton: this.selections[2].isPressed,
+			fourthButton: this.selections[3].isPressed,
 			})
-    },
-    openMenu() {
-      this.globalSelling = !this.globalSelling
-      eventBus.$emit('open-menu', {
-        globalSelling: this.globalSelling
-      })
-    }
+		},
+		openFastMarket() {
+			this.fastMarket = false,
+			this.report = false,
+			this.globalSelling = false
+			this.orders = false,
+			this.fastMarket = !this.fastMarket
+			eventBus.$emit('clicksss', {
+			firstButton: this.fastMarket,
+			secondButton: this.report,
+			thirdButton: this.globalSelling,
+			fourthButton: false,
+			})
+		},
+		openReport() {
+			this.fastMarket = false,
+			this.report = false,
+			this.globalSelling = false
+			this.orders = false,
+			this.report = !this.report
+
+			eventBus.$emit('clicksss', {
+			firstButton: this.fastMarket,
+			secondButton: this.report,
+			thirdButton: this.globalSelling,
+			fourthButton: false,
+			})
+		},
+		openOrders() {
+			this.fastMarket = false,
+			this.report = false,
+			this.globalSelling = false
+			this.report = false
+			this.orders = !this.orders
+			
+			eventBus.$emit('clicksss', {
+			firstButton: this.fastMarket,
+			secondButton: this.report,
+			thirdButton: this.globalSelling,
+			fourthButton: this.orders,
+			})
+		},
+		openMenu() {
+			this.globalSelling = true
+			eventBus.$emit('open-menu', {
+			globalSelling: this.globalSelling
+			})
+		},
+		openBigSelling() {
+			this.fastMarket = false,
+			this.report = false,
+			this.globalSelling = false
+			this.orders = false,
+			this.globalSelling = !this.globalSelling
+			eventBus.$emit('clicksss', {
+			firstButton: this.fastMarket,
+			secondButton: this.report,
+			thirdButton: this.globalSelling,
+			fourthButton: false,
+			})
+		}
   },
   created() {
             eventBus.$on('open-menu', data => {
@@ -148,17 +138,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="sass">
-.container
-	display: flex
-	justify-content: space-between
-	.buttonPr
-		width: 200px
-		margin-left: 2%
-.item
-	cursor: pointer
-	transition: 0.3s all
-	&:hover
-		background: rgba(0,0,0,0.3)
 .text-center
-	width: 100vw
+	display: flex
+	justify-content: space-around
+	span
+		font-family: Roboto
+		font-style: normal
+		font-weight: 400
+		font-size: 24px
+		cursor: pointer
+.item
+	transition: 0.4s all
+	cursor: pointer
+.item:hover
+	background: #ccc
 </style>

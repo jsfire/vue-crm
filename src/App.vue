@@ -20,11 +20,6 @@
 
 		</v-overlay>
 		
-		<div class="upperBar">
-			<clocksss></clocksss>
-			<v-icon dark large left>mdi-account-circle</v-icon>
-            <div class="upperBar_username">{{username}}</div>
-		</div>
 		<menuMain/>
 </v-app>
 </template>
@@ -32,13 +27,12 @@
 
 <script>
 import menuMain from '@/components/main'
-import clocksss from '@/components/clock'
 import { db } from './db'
 import {eventBus} from "./main"
 export default {
 	name: 'app',
 	components: {
-		clocksss, menuMain
+	menuMain
 	},
 	data() {
 		return {
@@ -73,6 +67,7 @@ export default {
 					
 				}
 			}
+			
 		}
 	},
 	firestore() {
@@ -87,13 +82,18 @@ export default {
 
 
 <style lang="sass">
+@import "../src/sass/_variables"
 * 
+
+body
+
 
 	
 #app 
 	text-align: center
 	margin: 0
 	padding: 0
+
 	.upperBar
 		display: flex
 		justify-content: center

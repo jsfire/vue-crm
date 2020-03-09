@@ -1,28 +1,76 @@
 <template>
     <div>
-        <v-btn @click="backtomain()" class="back-to-main" color="error"><v-icon left x-large>mdi-arrow-left</v-icon>На главную</v-btn>
         <div class="search">
-            <v-text-field v-model="search" prepend-inner-icon="mdi-card-search-outline" placeholder="Поиск" outlined raised filled width="100px"></v-text-field>
-        </div>
+            <v-container>
+                <v-row>
+                    <v-col auto>
+                        <v-row justify="center">
+                            <input v-model="search"  placeholder="Поиск" class="search-bar"><v-btn class="search-icon" large fab color="#3498db" dark><v-icon>mdi-magnify</v-icon></v-btn>
+                        </v-row>
+                    </v-col>
+                </v-row>
+            </v-container>
 
-        
-
-        <div class="goods">
-            <div :key="idx" v-for="(item, idx) in filteredList" class="goods-item">
-                <div class="goods-item-img">
-                    <img :src="item.img">
-                </div>
-                <div class="goods-item-name">
-                    {{item.name}}
-                </div>
-                <div class="goods-item-price">
-                    {{item.price}}₽
-                </div>
-                <div class="goods-item-add">
-                    <v-btn @click="addToCart(item)" color="success">Добавить<v-icon medium>mdi-check</v-icon></v-btn>
-                </div>
-            </div>
         </div>
+        <v-container class="goods">
+            <v-container :key="idx" v-for="(item, idx) in filteredList" class="goods-item">
+                <v-row align="center">
+                    <v-col class="goods-item-cols" col="2">
+                        <v-row align="center" justify="start">
+                            <img class="goods-item-img" :src="item.img">
+                        </v-row>
+                    </v-col>
+                    <v-col class="goods-item-cols" col="2">
+                        <v-row justify="start">
+                            <v-col auto>
+                                {{item.name}} 
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                    <v-col class="goods-item-cols" col="1">
+                         <v-row align="center" justify="start">
+                            <v-col auto>
+                                {{item.price}}₽
+                            </v-col>
+                            <v-col auto>
+                                {{item.remain}}шт.
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                    <v-col class="goods-item-cols" col="3">
+                        <v-row justify="end">
+                            <v-col auto>
+                                <v-row justify="end">
+                                  <v-btn @click="deleteValue(item)" color="#3498db" outlined x-small fab><v-icon>mdi-minus</v-icon></v-btn>
+                                </v-row>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                     <v-col class="goods-item-cols" col="2">
+                        <v-row justify="center">
+                            <v-col auto>
+                                <div class="amount">{{item.amount}} шт.</div>
+                            </v-col>
+                        </v-row>
+                    </v-col>
+                    <v-col class="goods-item-cols" col="1">
+                        <v-row justify="start">
+                            <v-col auto>
+                                <v-row justify="start">
+                                    <v-btn color="#3498db" @click="addValue(item)" outlined x-small fab><v-icon>mdi-plus</v-icon></v-btn>
+                                </v-row>
+                                
+                            </v-col> 
+                        </v-row>
+                    </v-col>
+                    <v-col class="goods-item-cols" col="1">
+                        <v-row justify="end">
+                            <v-btn style="width: 200px" @click="addToCart(item)" dark rounded x-large color="#3498db">Добавить<v-icon medium>mdi-check</v-icon></v-btn>
+                        </v-row>
+                    </v-col>                        
+                </v-row>
+            </v-container>
+        </v-container>
     </div>
 </template>
 
@@ -46,7 +94,8 @@ export default {
                 name: obj.name,
                 price: obj.price,
                 img: obj.img,
-                value: 1
+                amount: obj.amount,
+                remain: obj.remain
             })
             for (let i = 0; i < this.cart.length - 1; i++) {
                 if (this.cart[i+1].name == this.cart[i].name) {
@@ -65,7 +114,19 @@ export default {
             eventBus.$emit('open-menu', {
                 globalSelling: this.globalSelling
             })
-        }
+        },
+        addValue(obj) {
+            obj.amount++
+            if (obj.amount > obj.remain) {
+                obj.amount = obj.remain
+            }
+        },
+        deleteValue(obj) {
+            obj.amount--
+            if (obj.amount < 1) {
+                obj.amount = 1
+            }
+        },
 
         },
     firestore() {
@@ -87,35 +148,59 @@ export default {
 <style lang="sass" scoped>
 @import "@/sass/_variables"
 .search
-    width: 500px
     margin: 0 auto
+    margin-top: 25px
+    &-bar
+        width: 480px
+        height: 66px
+        border: 3px solid #3498DB
+        box-sizing: border-box
+        border-radius: 69px
+        text-align: start
+        padding: 0 0 0 25px
+        font-size: 18px
+        outline: none
+    &-icon
+        margin-left: -60px
 .goods
-    margin-top: 50px
     &-item
-        display: grid
-        grid-template-columns: 1fr 1fr 1fr 1fr
         width: 90%
         background: white
-        border-radius: 15px
         margin: 0 auto
-        border: 1px solid #3498db
         margin-bottom: 10px
         align-items: center
+        &-cols
+            height: 80px
+            border-top: 3px solid #3498db
+            border-bottom: 3px solid #3498db
+            &:first-child
+                border-left: 3px solid #3498db
+                border-radius: 50px 0  0  50px
+            &:last-child
+                border: none
+            &:nth-child(6)
+                border-right: 3px solid #3498db
+                border-radius:  0 50px 50px   0
+            &:nth-child(3)
+                font-weight: 500
+            &:nth-child(5)
+                font-weight: 500
+            &:nth-child(2)
+                font-weight: 500
         &-img
             width: 50px
             height: 50px
             margin-left: 25px
             background: white
-            img
-                width: 80%
-                height: 100%
 .cart
     position: absolute
     top: 10%
     right: 3%
-
 .back-to-main
     position: absolute
     left: 20px
     top: 15% 
+img
+    width: 80%
+    height: 100%
 </style>

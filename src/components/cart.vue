@@ -1,45 +1,104 @@
 <template>
-    <div>
+<div>
         <v-overlay opacity="0.9" z-index="500" :value="clicked">
-            <div class='cart_form'>
-                <div class="cart_form_descr">Вы добавили: </div>
-                <div class="cart_form_items">
-                    <div :key='idx' v-for='(goods, idx) in cart' class="cart_form_items_item">
-                        <img :src="goods.img" alt="">
-                        <div class="name">{{goods.name | capitalize}}</div>
-                        <div  class="price"><input class='value' v-bind:value="goods.price * goods.value + '₽'" disabled></div>
-                        <div class="amount">
-                            <button @click='addValue(goods)'>+</button>
-                            <input type='number' v-model.Number='goods.value' @keypress='check(goods, $event)' class="amount">
-                            <button @click='deleteValue(goods)'>-</button>
-                        </div>
-                        <button @click='deleteFromCart(goods)'>X</button>
-                        
-                    </div>
-                    
-                </div>
-                <div class="cart_form_btns">
-                    <button @click='pay_form_check = !pay_form_check, income = null, change = null' class='cart_form_btns_cash' >Оплата</button>
-                    <div class="div">Сумма: {{ sumCart() }}₽</div>
-                    <button @click='clearCart()'>Очистить  корзину</button>
-                </div>
-                
-                <div v-if='pay_form_check' class='pay_form'>
-                    <div class='sum'>Сумма к оплате: {{sum}}</div>
-                    <div class='pay_form_select'>Выберите способ оплаты: </div>
-                        <select>
-                            <option>Наличные</option>
-                        </select>
-                    <input type='number' v-model='income' @change="findChange()" placeholder='Внесено ₽'>
-                    <div class='pay_form_need'>Сдача: {{change}}  </div>
-                    <button @click='transaction()'>Успешная оплата</button>
-                    <button @click='pay_form_check = !pay_form_check, income = null, change = null'>Отклонить оплату</button>
-                </div>
+            <v-container class="cart-wrapper" fluid>
+                <v-row justify="end">
+                    <v-btn x-large text color="#3498DB" @click="closecart()">Закрыть</v-btn>
+                </v-row>
+            <div class="items"> 
+                <v-container :key='idx' v-for='(goods, idx) in cart' fluid text-xs-center>
+                    <v-divider light/>
+                    <v-row align="center"
+                        justify="center"  class="cart_form_items_item">
+                        <v-col auto>
 
-                <div v-if='transactionSucces' class='success'><p>Успешная оплата</p></div>
-            </div>
+                            <img class="image" :src="goods.img" alt="">
+
+                        </v-col>
+                        <v-col class="text" align-self="center" auto>
+                            {{goods.name || capitalize}}
+                        </v-col>
+                        <v-col class="text" align-self="center" auto>
+                             {{goods.price * goods.amount}}р.<v-icon small>mdi-currency-rub</v-icon>
+                        </v-col>
+                        <v-col align-self="center" auto>
+                            <v-row justify="end">
+                                <v-btn color="success" medium fab @click='addValue(goods)'><v-icon>mdi-plus</v-icon></v-btn>
+                            </v-row>
+                        </v-col>
+                        <v-col class="text" align-self="center" auto>
+                            <v-row justify="center">
+                                <input
+                                    class="amount"
+                                    v-model="goods.amount"
+                                    label="Количество"
+                                    type="number">
+                            </v-row> 
+                        </v-col>
+                        <v-col align-self="center" auto>
+                            <v-row justify="start">
+                                <v-btn  color="red" medium fab @click='deleteValue(goods)'><v-icon>mdi-minus</v-icon></v-btn>
+                            </v-row>
+                        </v-col>
+                       <v-col align-self="center" auto>
+                           <v-btn color="error" medium fab @click='deleteFromCart(goods)'><v-icon>mdi-close</v-icon></v-btn>
+                       </v-col>
+                    </v-row>
+                    
+                    <v-divider light/>  
+                </v-container>
+            </div>      
+            <v-row align="center">
+                <v-col auto>
+                    <v-row justify="center">
+                        <p>Сумма: </p><p class="sum">{{sumCart()}}р.</p>
+                    </v-row>
+                </v-col>
+                <v-col auto>
+                    <v-row justify="center">
+                        <p style="margin: 0">Получено: </p><input v-model="income" @input="findChange()" placeholder="Введите кол-во" class="sum" type="number">
+                    </v-row>
+                </v-col>
+                <v-col auto>
+                    <v-row justify="center">
+                        <p style="margin: 0">Сдача: </p><p class="sum">{{change}}р.</p>
+                    </v-row>
+                </v-col>
+            </v-row>
+            <v-divider light></v-divider>
+            <v-row>
+                        <v-col col="9">
+                            <v-spacer></v-spacer>
+                        </v-col>
+                        
+                        <v-col cols="2">
+                            <v-row justify="end">
+                                <v-btn x-large text color="#F13333" @click='close()'>Отменить</v-btn>
+                            </v-row>
+                        </v-col>
+
+                        <v-col cols="1" >
+                            <v-row justify="center">
+                                <v-btn x-large :loading="loader" light :disabled="declined" text color="#3498DB" @click='transaction()'>Оплата</v-btn>
+                            </v-row>
+                        </v-col>
+
+                    </v-row>
+            </v-container>                 
+        
+        <v-progress-circular
+            width="15"
+            class="loader"
+            color="#3498DB"
+            size="150"
+            indeterminate
+            v-if="loader"
+            ></v-progress-circular>
+        
         </v-overlay>
-    </div>
+                    
+
+</div>
 </template>
 
 <script>
@@ -53,11 +112,13 @@ export default {
             sum: 0,
             value: 1,
             income: 0,
-            change: null,
+            change: 0,
             pay_form_check: false,
             transactionSucces: false,
             username: [],
             overlay: false,
+            loader: false,
+            declined: false,
         }
     },
     props: ["clicked"],
@@ -70,7 +131,7 @@ export default {
         eventBus.$on('username', data => {
             this.username = data.user
             // eslint-disable-next-line no-console
-            console.log(this.username)
+            console.log(this.username.id)
         })
     },
     filters: {
@@ -90,15 +151,18 @@ export default {
             })
         },
         addValue(obj) {
-            obj.value++
+            obj.amount++
+            if (obj.amount > obj.remain) {
+                obj.amount = obj.remain
+            }
             eventBus.$emit('transfer-cart', {
                 cart: this.cart
             })
         },
         deleteValue(obj) {
-            obj.value--
-            if (obj.value < 1) {
-                obj.value = 1
+            obj.amount--
+            if (obj.amount < 1) {
+                obj.amount = 1
             }
             eventBus.$emit('transfer-cart', {
                 cart: this.cart
@@ -114,13 +178,18 @@ export default {
             eventBus.$emit('transfer-cart', {
                 cart: this.cart
             })
+            
+        },
+        close() {
+            this.clearCart()
+            this.closecart()
         },
         sumCart() {
             let items = []
             let result = 0;
             if (this.cart > []) {
                 for (let item of this.cart) {
-                    items.push(item.price * item.value)
+                    items.push(item.price * item.amount)
                     // eslint-disable-next-line no-unused-vars
                     result = items.reduce((sum, current) => {
                         this.sum = sum + current
@@ -141,10 +210,12 @@ export default {
             let year = date.getFullYear() 
             let month = date.getMonth() + 1
             let day = date.getDate()
-            if (this.change == 'Невозможно провести транзакцию, внесенная сумма неверна') {
-                this.change = null
+            if (this.change == null || this.income < this.sum || this.change) {
+                this.change = 'Невозможно провести транзакцию'
+                this.declined = true
             }
             if (this.change != null && this.income >= this.sum) {
+                this.loader = true
                 db.collection('sales').add({
                 items: this.cart,
                 sum: this.sum,
@@ -161,28 +232,35 @@ export default {
                     name: this.username.name
                 }
                     
+                }).then(() => {
+                    this.loader = false
+                    this.clearCart();
+                }).catch(err => {
+                    // eslint-disable-next-line no-console
+                    console.error(err)
+                    this.loader = false
                 })
-                this.clearCart();
-                this.pay_form_check = false
-                this.transactionSucces = true
-                setTimeout(() => {this.transactionSucces = false}, 1000)
             }
-            if (this.change == null || this.income < this.sum || this.change) {
-                this.change = 'Невозможно провести транзакцию, внесенная сумма неверна'
-            }
+            
             
             
         },
         findChange() {
             if (this.income < this.sum) {
                 this.change = 'Внесенная сумма меньше суммы товаров'
+                this.declined = true
             }
             if (this.income == this.sum) {
                this.change = 'Сдача не требуется'
+               this.declined = false
             }
             if (this.income > this.sum) {
                 this.change = this.income - this.sum
+                this.declined = false
             }
+        },
+        closecart() {
+            eventBus.$emit("opencart", {cartPressed: false})
         }
         
     },
@@ -195,7 +273,8 @@ export default {
         find() {
             return this.findChange();
 
-        }
+        },
+
 
     }
 }
@@ -204,205 +283,71 @@ export default {
 
 <style lang="sass" scoped>
 @import "@/sass/_variables"
-@keyframes successAnim
-    from
-        background: #fff
-    50%
-        background: #72db5a
-        color: white
-    to 
-        background: #fff
-.success
-    width: 300px
-    height: 150px
-    text-align: center
-    position: fixed
+.loader
+    position: absolute
     left: 50%
     top: 50%
     transform: translate(-50%, -50%)
-    border: 1px solid $border-color
-    border-radius: 25px
-    background: #fff
-    animation: successAnim 3s infinite
-    p 
-        margin-top: 70px
-
-
-.pay_form
-    width: 500px
-    height: 400px
-    position: fixed
-    left: 50%
-    top: 50%
-    transform: translate(-50%, -50%)
-    border: 1px solid $border-color
-    border-radius: 15px
-    background: #fff
-    display: grid
-    grid-template-rows: 60px 60px 60px 60px
-    justify-items: center
-    z-index: 600
+*
     color: black
-    text-align: center
-    .sum
-        margin-top: 25px
-    &_select
-        margin-bottom: 15px
-    input::-webkit-outer-spin-button
-    input::-webkit-inner-spin-button
-        -webkit-appearance: none
-        margin: 0
-    select
-        width: 150px
-        height: 30px
-        border-radius: 8px
-        outline: none
-        border: 1px solid $border-color
-    input
-        width: 150px
-        height: 25px
-        border: 1px solid $border-color
-        border-radius: 8px
-        outline: none
-        text-align: center
-    button
-        width: 130px
-        height: 30px
-        margin: 5px
-        border: 1px solid $border-color
-        background: #fff
-        border-radius: 8px
-        outline: none
-        cursor: pointer
-        transition: 0.2s all ease
-        font-size: 12px
-        color: black
-        &:hover
-            background: $border-color
-        &:active
-            background: green
-            color: white
-        &:last-child
-            &:hover
-                background: $border-color
-            &:active
-                background: darkred
-                color: white
-                
-       
 
-.cart_form
-    height: 500px
-    width: 1000px
-    background: #fff
-    position: fixed
-    left: 50%
-    top: 50%
-    transform: translate(-50%, -50%)
-    border: 1px solid $border-color
-    border-radius: 15px
-    box-shadow: 0 0 30px rgba(0,0,0,0.5)
-    z-index: 600
-    padding: 10px 0 10px 0
-    color: black
-    text-align: center
-    &_descr
-        text-align: center
-        font-size: 18px
-        z-index: 600
-    &_btns
-        display: flex
-        justify-content: space-around
-        margin-top: 15px
-        button
-            width: 150px
-            height: 40px
-            border: 1px solid $border-color
-            border-radius: 25px
-            outline: none
-            cursor: pointer
-            background: #fff
-            transition: 0.3s all ease
-            font-size: 15px
-            color: black
-            
-            &:hover
-                background: $border-color
-                color: white
-            &:active
-                transition: none
-                background: $border-color
-                color: black
+.items
+    overflow: auto
+    height: 575px
+    width: 80vw
 
-    &_items
-        margin-top: 30px
-        width: 100%
-        height: 370px
-        background: #fff
-        overflow-y: auto
-        overflow-x: hidden
-        display: grid
-        grid-template-columns: 1fr
-        justify-items: center
-        position: relative
-        &_total
-            border-radius: 15px
-            width: 950px
-            border: 1px solid $border-color
-            height: 0%
-            position: sticky
-            background: #fff
-            bottom: 0
-            transition: 0.5s all ease
-            font-size: 0
-            padding-top: 15px
-            &:hover
-                height: 40px
-                font-size: 20px
-        &_item
-            display: flex
-            justify-content: space-around
-            align-items: center
-            color: black
-            width: 950px
-            height: 50px
-            border: 1px solid $border-color
-            border-radius: 15px
-            margin-top: 10px
-            background: #fff
-            &_price
-                .value
-                    border: none
-                    background: #fff
-                    font-size: 18px
-                    width: 50px
-            img
-                width: 50px
-                height: 50px
-            input
-                width: 55px
-                height: 45px
-                text-align: center
-                outline: none
-                border: 1px solid $border-color
-                border-radius: 25%
-                &::-webkit-outer-spin-button,
-                &::-webkit-inner-spin-button 
-                    -webkit-appearance: none
-                    margin: 0
-            button
-                width: 30px
-                height: 30px
-                margin: 5px
-                border: 1px solid $border-color
-                background: #fff
-                border-radius: 25%
-                outline: none
-                cursor: pointer
-                transition: 0.2s all ease
-                font-size: 12px
-                &:hover
-                    background: $border-color
-                &:active
-                    background: $border-color
+.cart-wrapper
+    max-width: 1705px
+    height: 775px
+    background: white
+
+
+.price
+    height: 50px
+.image
+    background: white
+    width: 100px
+    height: 100px   
+.item
+    text-align: center
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button
+    -webkit-appearance: none
+    margin: 0
+input
+    text-align: center
+    outline: none
+.amount
+    width: 50px
+    height: 50px
+.items::-webkit-scrollbar 
+    display: block
+    width: 10px
+    
+
+.text
+    font-size: 20px
+    font-weight: 500    
+
+/* Track */
+.items::-webkit-scrollbar-track 
+    background: transparent
+    
+
+
+/* Handle */
+.items::-webkit-scrollbar-thumb 
+    background: black
+    border-radius: 20px
+    
+
+
+/* Handle on hover */
+.items::-webkit-scrollbar-thumb:hover 
+    background: black
+    height: 8px
+
+.sum
+    font-weight: 500
+
+
 </style>

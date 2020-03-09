@@ -1,7 +1,10 @@
 <template>
     <div>
-        <span class='hms'>{{hours}}:{{minutes}}:{{seconds}}</span>
-        <span class='dmy'>{{day}}-{{month}}-{{year}}</span>
+        <div class="clock">
+            <span class='hms'>{{hours}}:{{minutes}}:{{seconds}}</span>
+            <span class='dmy'>{{day}}.{{month}}.{{year}}</span>
+        </div>
+        
     </div>
 </template>
 
@@ -56,11 +59,21 @@ export default {
 
 <style lang='sass' scoped>
 
-div
-    position: absolute
-    left: 15px
-span
-    margin-right: 25px
+.clock
+    background: #3498db
+    border-radius: 50px
+    width: 200px
+    height: 35px
+    padding-top: 5px
 
+
+span
+    color: white
+    margin-left: 15px
+    font-weight: 500
+    font-size: 18px
+    &:first-child
+        margin: 0
+        
 
 </style>

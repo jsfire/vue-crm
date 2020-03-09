@@ -1,9 +1,9 @@
 <template>
     <div>
         <menuUpper />
-        <menuSelection v-if="smth" />
+        <menuSelection/>
 
-        <menuLower v-if="smth"/>
+        <menuLower/>
     </div>
 </template>
 
@@ -17,11 +17,6 @@ export default {
     components:  {
         menuUpper, menuSelection, menuLower
     },
-    data() {
-        return {
-            smth: true
-        }
-    }
 }
 </script>
 
