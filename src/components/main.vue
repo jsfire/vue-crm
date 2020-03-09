@@ -1,8 +1,7 @@
 <template>
     <div>
-        <menuUpper />
+        <menuUpper/>
         <menuSelection/>
-
         <menuLower/>
     </div>
 </template>
@@ -11,7 +10,6 @@
 import menuUpper from '@/components/menuUpper'
 import menuSelection from '@/components/menuSel'
 import menuLower from '@/components/menuLower'
-// 
 export default {
     name: 'menuMain',
     components:  {

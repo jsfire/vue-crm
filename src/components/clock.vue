@@ -35,7 +35,7 @@ export default {
 
             this.day = this.getZero(now.getDate());
 
-        }, 10);
+        }, 1000);
     },
     methods: {
         updateClock() {
