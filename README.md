@@ -1,4 +1,4 @@
-# for-artyom
+# shit
 
 ## Project setup
 ```
